@@ -30,6 +30,9 @@ awards <-
     top50 %>% mutate(category = "Top 50")
   )
 
+```
+
+```{r}
 awards %>%
   ggplot(aes(x = category, y = energy)) +
   geom_violin()
