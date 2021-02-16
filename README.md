@@ -8,4 +8,4 @@ The Top 2000 is an annual Dutch marathon radio program, that plays the 2,000 mos
 
 The new top 2000 songs probably have more focus on instruments compared to other hit songs from the same years.  
 
-As for the corpus i will be using the 2020 edition of the top 2000 and comparing to the spotify Dutch top 50 playlist.
+As for the corpus i will be using the 2020 edition of the top 2000 and comparing to the Spotify Dutch top 50 playlist.
