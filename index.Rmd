@@ -1,8 +1,8 @@
 ---
 title: "top 2000 vs top 50"
 author: "Laurens de Vries"
-date: "2/15/2021"
-output: html_document
+date: "15/2/2021"
+output: flexdashboard::flex_dashboard
 ---
 
 ```{r setup, include=FALSE}
@@ -10,6 +10,9 @@ library(tidyverse)
 library(spotifyr)
 
 ```
+
+Introduction
+=========================================
 
 The Top 2000 is an annual Dutch marathon radio program, that plays the 2,000 most popular songs of all time determined by a public vote. The highest ranking songs do not vary much from year to year but there sometimes new songs. I am interested in if these new songs are similar to older high ranking songs compared to other popular songs from the same year.
 
@@ -19,10 +22,15 @@ As for the corpus i will be using the 2020 edition of the top 2000 and comparing
 
 
 
-The following graphs will compare the distribution off certain variables between the playlists.
+The following graphs will compare the distribution of certain variables between the playlists.
+
+Visualization  {.storyboard}
+=========================================
+
+
 ```{r, include = FALSE}
-top2000 <- get_playlist_audio_features("", "1DTzz7Nh2rJBnyFbjsH1Mh")
-top50 <- get_playlist_audio_features("", "37i9dQZEVXbKCF6dqVpDkS")
+top2000 <- get_playlist_audio_features("", "2oBIu2PZIRU8H1XnZXt0LJ")
+top50 <- get_playlist_audio_features("", "0t20WVodhAy6RHa2yrMty8")
 
 awards <-
   bind_rows(
@@ -32,19 +40,29 @@ awards <-
 
 ```
 
+### Energy
+
 ```{r}
 awards %>%
   ggplot(aes(x = category, y = energy)) +
   geom_violin()
+```
 
+### Acousticness
+
+```{r}
 awards %>%
   ggplot(aes(x = category, y = acousticness)) +
   geom_violin()
+```
 
+### Valence
+
+```{r}
 awards %>%
   ggplot(aes(x = category, y = valence)) +
   geom_violin()
-
 ```
 
-
+Discussion
+=========================================
