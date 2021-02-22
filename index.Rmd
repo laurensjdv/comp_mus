@@ -8,6 +8,8 @@ output: flexdashboard::flex_dashboard
 ```{r setup, include=FALSE}
 library(tidyverse)
 library(spotifyr)
+library(plotly)
+
 
 ```
 
@@ -45,25 +47,32 @@ awards <-
 ### Energy
 
 ```{r}
-awards %>%
+violinPlot1 <- awards %>%
   ggplot(aes(x = category, y = energy)) +
   geom_violin()
+
+ggplotly(violinPlot1)
 ```
 
 ### Acousticness
 
 ```{r}
-awards %>%
+violinPlot2 <- awards %>%
   ggplot(aes(x = category, y = acousticness)) +
   geom_violin()
+
+ggplotly(violinPlot2)
 ```
 
 ### Valence
 
 ```{r}
-awards %>%
+violinPlot3 <- awards %>%
   ggplot(aes(x = category, y = valence)) +
   geom_violin()
+
+ggplotly(violinPlot3)
+
 ```
 
 Discussion
