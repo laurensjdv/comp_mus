@@ -50,43 +50,43 @@ awards <-
 
 ```{r}
 rollercoaster <-
-  get_tidy_audio_analysis("5B5YKjgne3TZzNpMsN9aj1") %>% # Change URI.
-  compmus_align(bars, segments) %>%                     # Change `bars`
-  select(bars) %>%                                      #   in all three
-  unnest(bars) %>%                                      #   of these lines.
+  get_tidy_audio_analysis("5B5YKjgne3TZzNpMsN9aj1") %>% 
+  compmus_align(bars, segments) %>%
+  select(bars) %>%
+  unnest(bars) %>%
   mutate(
     pitches =
       map(segments,
         compmus_summarise, pitches,
-        method = "rms", norm = "euclidean"              # Change summary & norm.
+        method = "rms", norm = "euclidean"
       )
   ) %>%
   mutate(
     timbre =
       map(segments,
         compmus_summarise, timbre,
-        method = "rms", norm = "euclidean"              # Change summary & norm.
+        method = "rms", norm = "euclidean"
       )
   )
 
 
 wellerman <-
-  get_tidy_audio_analysis("3iw6V4LH7yPj1ESORX9RIN") %>% # Change URI.
-  compmus_align(bars, segments) %>%                     # Change `bars`
-  select(bars) %>%                                      #   in all three
-  unnest(bars) %>%                                      #   of these lines.
+  get_tidy_audio_analysis("3iw6V4LH7yPj1ESORX9RIN") %>% 
+  compmus_align(bars, segments) %>%
+  select(bars) %>%
+  unnest(bars) %>%
   mutate(
     pitches =
       map(segments,
         compmus_summarise, pitches,
-        method = "rms", norm = "euclidean"              # Change summary & norm.
+        method = "rms", norm = "euclidean"
       )
   ) %>%
   mutate(
     timbre =
       map(segments,
         compmus_summarise, timbre,
-        method = "rms", norm = "euclidean"              # Change summary & norm.
+        method = "rms", norm = "euclidean"
       )
   )
 
