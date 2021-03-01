@@ -91,8 +91,16 @@ wellerman <-
   )
 
 
-rollercoaster %>%
-  compmus_self_similarity(timbre, "cosine") %>% 
+
+bind_rows(
+  rollercoaster %>%
+    compmus_self_similarity(pitches, "aitchison") %>%
+    mutate(d = d / max(d), type = "Chroma"),
+  rollercoaster %>%
+    compmus_self_similarity(timbre, "euclidean") %>%
+    mutate(d = d / max(d), type = "Timbre")
+) %>%
+  mutate() %>%
   ggplot(
     aes(
       x = xstart + xduration / 2,
@@ -105,12 +113,20 @@ rollercoaster %>%
   ggtitle("Danny Vera - Rollercoaster") +
   geom_tile() +
   coord_fixed() +
+  facet_wrap(~type) +
   scale_fill_viridis_c(guide = "none") +
   theme_classic() +
   labs(x = "", y = "")
 
-wellerman %>%
-  compmus_self_similarity(timbre, "cosine") %>% 
+bind_rows(
+  wellerman %>%
+    compmus_self_similarity(pitches, "aitchison") %>%
+    mutate(d = d / max(d), type = "Chroma"),
+  wellerman %>%
+    compmus_self_similarity(timbre, "euclidean") %>%
+    mutate(d = d / max(d), type = "Timbre")
+) %>%
+  mutate() %>%
   ggplot(
     aes(
       x = xstart + xduration / 2,
@@ -123,6 +139,7 @@ wellerman %>%
   ggtitle("Nathan Evans - Wellerman (Sea Shanty / 220 KID x Billen Ted Remix)") +
   geom_tile() +
   coord_fixed() +
+  facet_wrap(~type) +
   scale_fill_viridis_c(guide = "none") +
   theme_classic() +
   labs(x = "", y = "")
@@ -131,9 +148,8 @@ wellerman %>%
 ***
 
 The differences between the songs are also visible on the self similairity matrices.
-The timbre is plotted in this case.
 Rollercoaster results in a much more uniform plot, while the Sea Shanty, has yellow lines 
-at around 30 and 80 seconds. This correlates when you listen to the songs, Sea Shanty can be classified as an EDM song with "drops". These drops result in a drastic change in timbre, rollercoaster is a pop song with more gradual timbre changes.
+at around 30 and 80 seconds. This correlates when you listen to the songs, Sea Shanty can be classified as an EDM song with "drops". These drops result in a drastic change in timbre, rollercoaster is a pop song with more gradual timbre changes. Looking at the pitches, it is the same case the drops also result in big changes in pitch. 
 
 ### Chromagram of #1 song of top 2000
 ```{r}
