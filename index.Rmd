@@ -9,6 +9,8 @@ output: flexdashboard::flex_dashboard
 library(tidyverse)
 library(spotifyr)
 library(plotly)
+library(compmus)
+library(ggplot2)
 
 
 ```
@@ -43,6 +45,126 @@ awards <-
   )
 
 ```
+
+### Structure of #1 songs of top 50 and top 2000
+
+```{r}
+rollercoaster <-
+  get_tidy_audio_analysis("5B5YKjgne3TZzNpMsN9aj1") %>% # Change URI.
+  compmus_align(bars, segments) %>%                     # Change `bars`
+  select(bars) %>%                                      #   in all three
+  unnest(bars) %>%                                      #   of these lines.
+  mutate(
+    pitches =
+      map(segments,
+        compmus_summarise, pitches,
+        method = "rms", norm = "euclidean"              # Change summary & norm.
+      )
+  ) %>%
+  mutate(
+    timbre =
+      map(segments,
+        compmus_summarise, timbre,
+        method = "rms", norm = "euclidean"              # Change summary & norm.
+      )
+  )
+
+
+wellerman <-
+  get_tidy_audio_analysis("3iw6V4LH7yPj1ESORX9RIN") %>% # Change URI.
+  compmus_align(bars, segments) %>%                     # Change `bars`
+  select(bars) %>%                                      #   in all three
+  unnest(bars) %>%                                      #   of these lines.
+  mutate(
+    pitches =
+      map(segments,
+        compmus_summarise, pitches,
+        method = "rms", norm = "euclidean"              # Change summary & norm.
+      )
+  ) %>%
+  mutate(
+    timbre =
+      map(segments,
+        compmus_summarise, timbre,
+        method = "rms", norm = "euclidean"              # Change summary & norm.
+      )
+  )
+
+
+rollercoaster %>%
+  compmus_self_similarity(timbre, "cosine") %>% 
+  ggplot(
+    aes(
+      x = xstart + xduration / 2,
+      width = xduration,
+      y = ystart + yduration / 2,
+      height = yduration,
+      fill = d
+    )
+  ) +
+  ggtitle("Danny Vera - Rollercoaster") +
+  geom_tile() +
+  coord_fixed() +
+  scale_fill_viridis_c(guide = "none") +
+  theme_classic() +
+  labs(x = "", y = "")
+
+wellerman %>%
+  compmus_self_similarity(timbre, "cosine") %>% 
+  ggplot(
+    aes(
+      x = xstart + xduration / 2,
+      width = xduration,
+      y = ystart + yduration / 2,
+      height = yduration,
+      fill = d
+    )
+  ) +
+  ggtitle("Nathan Evans - Wellerman (Sea Shanty / 220 KID x Billen Ted Remix)") +
+  geom_tile() +
+  coord_fixed() +
+  scale_fill_viridis_c(guide = "none") +
+  theme_classic() +
+  labs(x = "", y = "")
+```
+
+***
+
+The differences between the songs are also visible on the self similairity matrices.
+The timbre is plotted in this case.
+Rollercoaster results in a much more uniform plot, while the Sea Shanty, has yellow lines 
+at around 30 and 80 seconds. This correlates when you listen to the songs, Sea Shanty can be classified as an EDM song with "drops". These drops result in a drastic change in timbre, rollercoaster is a pop song with more gradual timbre changes.
+
+### Chromagram of #1 song of top 2000
+```{r}
+rollercoaster2 <-
+  get_tidy_audio_analysis("5B5YKjgne3TZzNpMsN9aj1") %>%
+  select(segments) %>%
+  unnest(segments) %>%
+  select(start, duration, pitches)
+
+rollercoaster2 %>%
+  mutate(pitches = map(pitches, compmus_normalise, "euclidean")) %>%
+  compmus_gather_chroma() %>% 
+  ggplot(
+    aes(
+      x = start + duration / 2,
+      width = duration,
+      y = pitch_class,
+      fill = value
+    )
+  ) +
+  ggtitle("Chromagram of Rollercoaster by Danny Vera") +
+  geom_tile() +
+  labs(x = "Time (s)", y = NULL, fill = "Magnitude") +
+  theme_minimal() +
+  scale_fill_viridis_c()
+```
+
+***
+
+The chromagram shows that the song is written in the A pitch class. There is no 
+overlap visible between the pitch classes. The melody is not clearly visible as the song is quite long with a short melody.
 
 ### Energy
 
