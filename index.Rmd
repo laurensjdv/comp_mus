@@ -11,6 +11,9 @@ library(spotifyr)
 library(plotly)
 library(compmus)
 library(ggplot2)
+library(dplyr)
+library(ggthemes)
+library(flexdashboard)
 
 
 ```
@@ -44,6 +47,34 @@ awards <-
     top50 %>% mutate(category = "Top 50")
   )
 
+```
+
+### Tempogram of Danny Vera - Rollercoaster
+
+```{r}
+rolco <- get_tidy_audio_analysis("5B5YKjgne3TZzNpMsN9aj1")
+
+rolco %>%
+  tempogram(window_size = 8, hop_size = 1, cyclic = TRUE) %>%
+  ggplot(aes(x = time, y = bpm, fill = power)) +
+  geom_raster() +
+  scale_fill_viridis_c(guide = "none") +
+  labs(x = "Time (s)", y = "Tempo (BPM)") +
+  theme_classic()
+```
+
+### Tempogram of Nathan Evans - Wellerman (Sea Shanty / 220 KID x Billen Ted Remix)
+
+```{r}
+well <- get_tidy_audio_analysis("3iw6V4LH7yPj1ESORX9RIN")
+
+well %>%
+  tempogram(window_size = 8, hop_size = 1, cyclic = FALSE) %>%
+  ggplot(aes(x = time, y = bpm, fill = power)) +
+  geom_raster() +
+  scale_fill_viridis_c(guide = "none") +
+  labs(x = "Time (s)", y = "Tempo (BPM)") +
+  theme_classic()
 ```
 
 ### Structure of #1 songs of top 50 and top 2000
