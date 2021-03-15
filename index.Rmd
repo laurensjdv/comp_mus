@@ -23,11 +23,11 @@ Introduction
 
 DO NOT SHOW THIS PORTFOLIO IN CLASS
 
-The Top 2000 is an annual Dutch marathon radio program, that plays the 2,000 most popular songs of all time determined by a public vote. The highest ranking songs do not vary much from year to year but there sometimes new songs. I am interested in if these new songs are similar to older high ranking songs compared to other popular songs from the same year.
+The Top 2000 is an annual Dutch marathon radio program, that plays the 2,000 most popular songs of all time determined by a public vote. The highest ranking songs do not vary much from year to year but there sometimes new songs. I am interested in if these new songs are similar to older high ranking songs compared to other popular songs from the same year. 
 
 The new top 2000 songs probably have more focus on instruments compared to other hit songs from the same years.
 
-As for the corpus i will be using the 2020 edition of the top 2000 and comparing to the spotify Dutch top 50 playlist.
+As for the corpus I will be using a playlist of the 50 newest songs from the top 2000 and comparing to the spotify Dutch top 50 playlist.
 
 
 
@@ -49,6 +49,7 @@ awards <-
 
 ```
 
+
 ### Tempogram of Danny Vera - Rollercoaster
 
 ```{r}
@@ -63,6 +64,11 @@ rolco %>%
   theme_classic()
 ```
 
+***
+
+The tempogram of rollercoaster is very unclear, the song primarily features a guitar melody and vocals.
+Tempograms seem to be more unclear on songs with these characteristics.
+
 ### Tempogram of Nathan Evans - Wellerman (Sea Shanty / 220 KID x Billen Ted Remix)
 
 ```{r}
@@ -76,6 +82,12 @@ well %>%
   labs(x = "Time (s)", y = "Tempo (BPM)") +
   theme_classic()
 ```
+
+*** 
+
+The tempogram of wellerman is very clear, the tempo is very constant throughout the song. 
+This is also the case for more songs in the top 50, the tempograms are clearer than most of the new songs from the top 2000.
+
 
 ### Structure of #1 songs of top 50 and top 2000
 
