@@ -7,6 +7,7 @@ output: flexdashboard::flex_dashboard
 
 ```{r setup, include=FALSE}
 library(tidyverse)
+library(tidymodels)
 library(spotifyr)
 library(plotly)
 library(compmus)
@@ -14,8 +15,25 @@ library(ggplot2)
 library(dplyr)
 library(ggthemes)
 library(flexdashboard)
+library(ggdendro)
+library(heatmaply)
 
 
+get_conf_mat <- function(fit) {
+  outcome <- .get_tune_outcome_names(fit)
+  fit %>% 
+    collect_predictions() %>% 
+    conf_mat(truth = outcome, estimate = .pred_class)
+}  
+
+get_pr <- function(fit) {
+  fit %>% 
+    conf_mat_resampled() %>% 
+    group_by(Prediction) %>% mutate(precision = Freq / sum(Freq)) %>% 
+    group_by(Truth) %>% mutate(recall = Freq / sum(Freq)) %>% 
+    ungroup() %>% filter(Prediction == Truth) %>% 
+    select(class = Prediction, precision, recall)
+}  
 ```
 
 Introduction
@@ -41,11 +59,87 @@ Visualization  {.storyboard}
 top2000 <- get_playlist_audio_features("", "2oBIu2PZIRU8H1XnZXt0LJ")
 top50 <- get_playlist_audio_features("", "0t20WVodhAy6RHa2yrMty8")
 
-awards <-
+hits <-
   bind_rows(
-    top2000 %>% mutate(category = "Top 2000"),
-    top50 %>% mutate(category = "Top 50")
+    top2000 %>% mutate(playlist = "Top 2000"),
+    top50 %>% mutate(playlist = "Top 50")
   )
+
+hits_features <-
+  hits %>%  # For your portfolio, change this to the name of your corpus.
+  add_audio_analysis() %>% 
+  mutate(
+    playlist = factor(playlist),
+    segments = map2(segments, key, compmus_c_transpose),
+    pitches =
+      map(
+        segments,
+        compmus_summarise, pitches,
+        method = "mean", norm = "manhattan"
+      ),
+    timbre =
+      map(
+        segments,
+        compmus_summarise, timbre,
+        method = "mean",
+      )
+  ) %>%
+  mutate(pitches = map(pitches, compmus_normalise, "clr")) %>%
+  mutate_at(vars(pitches, timbre), map, bind_rows) %>%
+  unnest(cols = c(pitches, timbre))
+
+hits_recipe <-
+  recipe(
+    playlist ~
+      danceability +
+      energy +
+      loudness +
+      speechiness +
+      acousticness +
+      instrumentalness +
+      liveness +
+      valence +
+      tempo +
+      duration +
+      C + `C#|Db` + D + `D#|Eb` +
+      E + `F` + `F#|Gb` + G +
+      `G#|Ab` + A + `A#|Bb` + B +
+      c01 + c02 + c03 + c04 + c05 + c06 +
+      c07 + c08 + c09 + c10 + c11 + c12,
+    data = hits_features,          # Use the same name as the previous block.
+  ) %>%
+  step_center(all_predictors()) %>%
+  step_scale(all_predictors())      # Converts to z-scores.
+  # step_range(all_predictors())    # Sets range to [0, 1].
+
+hits_cv <- hits_features %>% vfold_cv(5)
+
+knn_model <-
+  nearest_neighbor(neighbors = 1) %>%
+  set_mode("classification") %>% 
+  set_engine("kknn")
+
+hits_knn <- 
+  workflow() %>% 
+  add_recipe(hits_recipe) %>% 
+  add_model(knn_model) %>% 
+  fit_resamples(
+    hits_cv, 
+    control = control_resamples(save_pred = TRUE)
+  )
+
+```
+
+### Classification of top 2000 and top 50
+
+```{r}
+hits_knn %>% get_conf_mat() %>% autoplot(type = "mosaic")
+
+```
+
+### Feature importance
+
+```{r}
 
 ```
 
@@ -53,15 +147,15 @@ awards <-
 ### Tempogram of Danny Vera - Rollercoaster
 
 ```{r}
-rolco <- get_tidy_audio_analysis("5B5YKjgne3TZzNpMsN9aj1")
-
-rolco %>%
-  tempogram(window_size = 8, hop_size = 1, cyclic = TRUE) %>%
-  ggplot(aes(x = time, y = bpm, fill = power)) +
-  geom_raster() +
-  scale_fill_viridis_c(guide = "none") +
-  labs(x = "Time (s)", y = "Tempo (BPM)") +
-  theme_classic()
+# rolco <- get_tidy_audio_analysis("5B5YKjgne3TZzNpMsN9aj1")
+# 
+# rolco %>%
+#   tempogram(window_size = 8, hop_size = 1, cyclic = TRUE) %>%
+#   ggplot(aes(x = time, y = bpm, fill = power)) +
+#   geom_raster() +
+#   scale_fill_viridis_c(guide = "none") +
+#   labs(x = "Time (s)", y = "Tempo (BPM)") +
+#   theme_classic()
 ```
 
 ***
@@ -72,15 +166,15 @@ Tempograms seem to be more unclear on songs with these characteristics.
 ### Tempogram of Nathan Evans - Wellerman (Sea Shanty / 220 KID x Billen Ted Remix)
 
 ```{r}
-well <- get_tidy_audio_analysis("3iw6V4LH7yPj1ESORX9RIN")
-
-well %>%
-  tempogram(window_size = 8, hop_size = 1, cyclic = FALSE) %>%
-  ggplot(aes(x = time, y = bpm, fill = power)) +
-  geom_raster() +
-  scale_fill_viridis_c(guide = "none") +
-  labs(x = "Time (s)", y = "Tempo (BPM)") +
-  theme_classic()
+# well <- get_tidy_audio_analysis("3iw6V4LH7yPj1ESORX9RIN")
+# 
+# well %>%
+#   tempogram(window_size = 8, hop_size = 1, cyclic = FALSE) %>%
+#   ggplot(aes(x = time, y = bpm, fill = power)) +
+#   geom_raster() +
+#   scale_fill_viridis_c(guide = "none") +
+#   labs(x = "Time (s)", y = "Tempo (BPM)") +
+#   theme_classic()
 ```
 
 *** 
@@ -382,7 +476,13 @@ overlap visible between the pitch classes. The melody is not clearly visible as 
 ### Energy
 
 ```{r}
-violinPlot1 <- awards %>%
+hits <-
+  bind_rows(
+    top2000 %>% mutate(category = "Top 2000"),
+    top50 %>% mutate(category = "Top 50")
+  )
+
+violinPlot1 <- hits %>%
   ggplot(aes(x = category, y = energy)) +
   geom_violin()
 
@@ -392,7 +492,7 @@ ggplotly(violinPlot1)
 ### Acousticness
 
 ```{r}
-violinPlot2 <- awards %>%
+violinPlot2 <- hits %>%
   ggplot(aes(x = category, y = acousticness)) +
   geom_violin()
 
@@ -402,7 +502,7 @@ ggplotly(violinPlot2)
 ### Valence
 
 ```{r}
-violinPlot3 <- awards %>%
+violinPlot3 <- hits %>%
   ggplot(aes(x = category, y = valence)) +
   geom_violin()
 
