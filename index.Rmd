@@ -1,7 +1,7 @@
 ---
 title: "top 2000 vs top 50"
 author: "Laurens de Vries"
-date: "15/2/2021"
+date: "29/3/2021"
 output: flexdashboard::flex_dashboard
 ---
 
@@ -43,17 +43,34 @@ get_pr <- function(fit) {
 Introduction
 =========================================
 
-DO NOT SHOW THIS PORTFOLIO IN CLASS
+Row
+-------------------------------------
+
+### 
 
 The Top 2000 is an annual Dutch marathon radio program, that plays the 2,000 most popular songs of all time determined by a public vote. The highest ranking songs do not vary much from year to year but there sometimes new songs. I am interested in what makes new popular songs suitable for top 50, meaning short term hits, and what makes new songs suited for the top 2000.
 
 
-As for the corpus I will be using a playlist of the 50 newest songs from the top 2000 and comparing to the spotify Dutch top 50 playlist. When comparing the playlist on a track level basis, both the #1 will be used as I think they reflect the differences very well. The highest ranked song of the new top 2000 tracks is also the current #1, Rollercoaster by Danny Vera. The current number one song on the top 50 is Sea Shanty by Wellerman, remixed by 220 KID and Billen Ted. These song were chosen as they sound very different and fit the playlists well. Wellerman incorperates a recent trend from social media, a sea shanty and mixes it with Electronic Dance Music. This makes it a good song to represent top 50 which is more targeted on trends. Rollercoaster is more suited to be a long term popular song with its focus on vocal and instrumentals.
+As for the corpus I will be using a playlist of the 50 newest songs from latest edition of the top 2000 and comparing to the spotify Dutch top 50 playlist. When comparing the playlist on a track level basis, both the #1 will be used as I think they reflect the differences very well. The highest ranked song of the new top 2000 tracks is also the current #1, Rollercoaster by Danny Vera. The current number one song on the top 50 is Sea Shanty by Wellerman, remixed by 220 KID and Billen Ted. These song were chosen as they sound very different and fit the playlists well. Wellerman incorperates a recent trend from social media, a sea shanty and mixes it with Electronic Dance Music. This makes it a good song to represent top 50 which is more targeted on trends. Rollercoaster is more suited to be a long term popular song with its focus on vocal and instrumentals.
 
 In this storyboard we will firstly gain insight in the correlations of the playlist based on spotify features such as loudness, acousticness and energy. The chromagrams of the number one songs and self similarity will be analysed. Furthermore we will look into the difficulty of categorizing the tempo of songs in the playlist. Lastly we will train and analyse a classifier which predicts the playlist of a song based on features. 
 
-[Link to the 50 newest top 2000 songs](https://open.spotify.com/playlist/2oBIu2PZIRU8H1XnZXt0LJ?si=792be20dedee4729)
-[Link to the top 50 as of February](https://open.spotify.com/playlist/0t20WVodhAy6RHa2yrMty8?si=e04341c43c5e42e9)
+Row
+-------------------------------------
+
+### 
+
+
+```{=html}
+<div>
+<object data="https://open.spotify.com/embed/playlist/0t20WVodhAy6RHa2yrMty8" width="300" height="380" style="display:block;margin:auto;width:25%;min-width:300px">
+    <embed src="https://open.spotify.com/embed/playlist/0t20WVodhAy6RHa2yrMty8" width="300" height="380"></embed>
+</object>
+<object data="https://open.spotify.com/embed/playlist/2oBIu2PZIRU8H1XnZXt0LJ" width="300" height="380" style="display:block;margin:auto;width:25%;min-width:300px">
+    <embed src="https://open.spotify.com/embed/playlist/2oBIu2PZIRU8H1XnZXt0LJ" width="300" height="380"></embed>
+</object>
+</div>
+```
 
 Visualization  {.storyboard}
 =========================================
