@@ -52,6 +52,9 @@ As for the corpus I will be using a playlist of the 50 newest songs from the top
 
 In this storyboard we will firstly gain insight in the correlations of the playlist based on spotify features such as loudness, acousticness and energy. The chromagrams of the number one songs and self similarity will be analysed. Furthermore we will look into the difficulty of categorizing the tempo of songs in the playlist. Lastly we will train and analyse a classifier which predicts the playlist of a song based on features. 
 
+[Link to the 50 newest top 2000 songs](https://open.spotify.com/playlist/2oBIu2PZIRU8H1XnZXt0LJ?si=792be20dedee4729)
+[Link to the top 50 as of February](https://open.spotify.com/playlist/0t20WVodhAy6RHa2yrMty8?si=e04341c43c5e42e9)
+
 Visualization  {.storyboard}
 =========================================
 
@@ -308,6 +311,44 @@ at around 30 and 80 seconds. This correlates when you listen to the songs, Sea S
 
 These matrices make it visible that a song is 'trendier' by showing EDM-like features.
 
+### Tempogram of Danny Vera - Rollercoaster
+
+```{r}
+rolco <- get_tidy_audio_analysis("5B5YKjgne3TZzNpMsN9aj1")
+
+rolco %>%
+   tempogram(window_size = 8, hop_size = 1, cyclic = FALSE) %>%
+   ggplot(aes(x = time, y = bpm, fill = power)) +
+   geom_raster() +
+   scale_fill_viridis_c(guide = "none") +
+   labs(x = "Time (s)", y = "Tempo (BPM)") +
+   theme_classic()
+```
+
+***
+
+The tempogram of rollercoaster is very unclear, the song primarily features a guitar melody and vocals.
+Tempograms seem to be more unclear on songs with these characteristics.
+
+### Tempogram of Nathan Evans - Wellerman (Sea Shanty / 220 KID x Billen Ted Remix)
+
+```{r}
+well <- get_tidy_audio_analysis("3iw6V4LH7yPj1ESORX9RIN")
+
+well %>%
+   tempogram(window_size = 8, hop_size = 1, cyclic = TRUE) %>%
+   ggplot(aes(x = time, y = bpm, fill = power)) +
+  geom_raster() +
+   scale_fill_viridis_c(guide = "none") +
+   labs(x = "Time (s)", y = "Tempo (BPM)") +
+   theme_classic()
+```
+
+*** 
+
+The tempogram of wellerman is very clear, the song has a very constant tempo of around 120 bpm. 
+This is also the case for more songs in the top 50, the tempograms are clearer than most of the new songs from the top 2000.
+
 
 ```{r, include = FALSE}
 
@@ -464,43 +505,7 @@ Plotting the features also makes it clear why the classifier ranked these featur
 Most of the outliers are top 2000 songs. The difference in the average length is clearly visible. The danceability is also higher and more clustered for the top 50 songs. The differences in valence is less clear by plotting it as the size.
 
 
-### Tempogram of Danny Vera - Rollercoaster
 
-```{r}
-rolco <- get_tidy_audio_analysis("5B5YKjgne3TZzNpMsN9aj1")
-
-rolco %>%
-   tempogram(window_size = 8, hop_size = 1, cyclic = FALSE) %>%
-   ggplot(aes(x = time, y = bpm, fill = power)) +
-   geom_raster() +
-   scale_fill_viridis_c(guide = "none") +
-   labs(x = "Time (s)", y = "Tempo (BPM)") +
-   theme_classic()
-```
-
-***
-
-The tempogram of rollercoaster is very unclear, the song primarily features a guitar melody and vocals.
-Tempograms seem to be more unclear on songs with these characteristics.
-
-### Tempogram of Nathan Evans - Wellerman (Sea Shanty / 220 KID x Billen Ted Remix)
-
-```{r}
-well <- get_tidy_audio_analysis("3iw6V4LH7yPj1ESORX9RIN")
-
-well %>%
-   tempogram(window_size = 8, hop_size = 1, cyclic = TRUE) %>%
-   ggplot(aes(x = time, y = bpm, fill = power)) +
-  geom_raster() +
-   scale_fill_viridis_c(guide = "none") +
-   labs(x = "Time (s)", y = "Tempo (BPM)") +
-   theme_classic()
-```
-
-*** 
-
-The tempogram of wellerman is very clear, the song has a very constant tempo of around 120 bpm. 
-This is also the case for more songs in the top 50, the tempograms are clearer than most of the new songs from the top 2000.
 
 
 
@@ -517,4 +522,6 @@ The random forest classifier provided interesting results, I think that using mo
 In conclusion, what makes a new song fit the top 2000 instead of the top 50 is a combination of the length of the track, the danceability, the valence, energy and whether it is a major key or minor key. These factors in combination will not give a definitive results but an indication. 
 
 Finally, maybe it is good that it is difficult to predict, considering that music is a form of artistic expression and unpredictability or creativity is also a part of art which makes art interesting.
+
+
 
